@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#08040f"/>
+      <stop offset="100%" style="stop-color:#110820"/>
+    </linearGradient>
+    <filter id="glow-yellow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="glow-pink">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="320" fill="url(#bg)"/>
+
+  <!-- Scanlines -->
+  <rect width="1200" height="320" fill="url(#scanlines)" opacity="0.06"/>
+
+  <!-- Accent lines -->
+  <line x1="0" y1="4" x2="1200" y2="4" stroke="#ff0080" stroke-width="2" opacity="0.6"/>
+  <line x1="0" y1="316" x2="1200" y2="316" stroke="#ff0080" stroke-width="2" opacity="0.6"/>
+
+  <!-- Left accent bar -->
+  <rect x="60" y="40" width="4" height="240" fill="#f5e800" opacity="0.5"/>
+
+  <!-- Right accent bar -->
+  <rect x="1136" y="40" width="4" height="240" fill="#f5e800" opacity="0.5"/>
+
+  <!-- NEON text -->
+  <text x="600" y="148"
+    font-family="'Arial Black', 'Impact', sans-serif"
+    font-size="148"
+    font-weight="900"
+    letter-spacing="28"
+    text-anchor="middle"
+    fill="#f5e800"
+    filter="url(#glow-yellow)"
+    opacity="0.95">NEON</text>
+
+  <!-- BLONDE text -->
+  <text x="600" y="252"
+    font-family="'Arial Black', 'Impact', sans-serif"
+    font-size="98"
+    font-weight="900"
+    letter-spacing="18"
+    text-anchor="middle"
+    fill="#f5e800"
+    opacity="0.9">BLONDE</text>
+
+  <!-- Tagline -->
+  <text x="600" y="294"
+    font-family="'Arial', sans-serif"
+    font-size="15"
+    font-weight="500"
+    letter-spacing="8"
+    text-anchor="middle"
+    fill="#ff0080"
+    opacity="0.8">80S COVER BAND · FAN TIP &amp; REQUEST APP</text>
+
+  <!-- Corner dots -->
+  <circle cx="80" cy="160" r="3" fill="#00e5ff" opacity="0.6"/>
+  <circle cx="1120" cy="160" r="3" fill="#00e5ff" opacity="0.6"/>
+</svg>
