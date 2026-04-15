@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Neon Blonde — Tip & Request</title>
+
+  <!-- QR Code library (for admin use) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    /* ── FONTS ── */
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap');
+
+    @font-face {
+      font-family: 'Dharma Punk';
+      src: url('Dharma Punk.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── ROOT PALETTE (from poster) ── */
+    :root {
+      --bg:        #08040f;
+      --pink:      #ff0080;
+      --yellow:    #f5e800;
+      --cyan:      #00e5ff;
+      --orange:    #ff6a00;
+      --white:     #ffffff;
+      --card-bg:   rgba(255,255,255,0.04);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── SCANLINES OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(0,0,0,0.12) 3px,
+        rgba(0,0,0,0.12) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── VIEWS ── */
+    .view {
+      display: none;
+      min-height: 100vh;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 20px 40px;
+      animation: fadeIn 0.35s ease;
+    }
+    .view.active { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── LOGO / BAND NAME ── */
+    .band-name {
+      font-family: 'Dharma Punk', 'Bebas Neue', sans-serif;
+      color: var(--yellow);
+      line-height: 0.92;
+      text-align: center;
+      margin-bottom: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .band-name .word-neon {
+      font-size: clamp(4.5rem, 21vw, 8.25rem);
+      letter-spacing: 0.08em;
+      display: block;
+    }
+    .band-name .word-blonde {
+      font-size: clamp(3rem, 14vw, 5.5rem);
+      letter-spacing: 0.06em;
+      display: block;
+    }
+    .band-tagline {
+      font-family: 'DM Sans', sans-serif;
+      font-size: clamp(0.75rem, 3.5vw, 1rem);
+      font-weight: 500;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--pink);
+      margin-bottom: 36px;
+      text-align: center;
+    }
+
+    /* ── HOME SCREEN ── */
+    .home-tagline {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.6rem, 7vw, 2.6rem);
+      color: var(--white);
+      text-align: center;
+      margin-bottom: 48px;
+      line-height: 1.1;
+      letter-spacing: 0.05em;
+    }
+    .home-tagline span {
+      color: var(--cyan);
+    }
+
+    .button-row {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+      max-width: 380px;
+    }
+
+    /* ── MAIN BUTTONS ── */
+    .btn-main {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 28px 20px;
+      border: 3px solid;
+      border-radius: 6px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 9vw, 2.8rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      background: transparent;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-main:active { transform: scale(0.97); }
+    .btn-main:hover { opacity: 0.85; }
+
+    .btn-main .sub-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.2em;
+      font-weight: 500;
+      margin-top: 4px;
+      opacity: 0.7;
+    }
+
+    .btn-tip {
+      color: var(--yellow);
+      border-color: var(--yellow);
+    }
+
+    .btn-request {
+      color: var(--pink);
+      border-color: var(--pink);
+    }
+
+    .btn-fund {
+      color: var(--orange);
+      border-color: var(--orange);
+    }
+
+    /* ── FUND VIEW ── */
+    #view-fund .section-title { color: var(--orange); }
+
+    .gig-badge {
+      display: inline-block;
+      border: 1px solid rgba(255,106,0,0.5);
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 16px;
+    }
+
+    .fund-intro {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-align: center;
+      color: rgba(255,255,255,0.55);
+      max-width: 320px;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    .fund-intro strong { color: var(--orange); font-weight: 700; }
+
+    .song-list {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .song-card {
+      border: 2px solid rgba(255,106,0,0.25);
+      border-radius: 8px;
+      padding: 14px 16px;
+      background: rgba(255,106,0,0.03);
+      transition: border-color 0.15s;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .song-card.leader {
+      border-color: var(--orange);
+      background: rgba(255,106,0,0.08);
+    }
+
+    .song-card-top {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .song-rank {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 0.02em;
+      color: rgba(255,255,255,0.15);
+      min-width: 36px;
+      text-align: center;
+      line-height: 1;
+    }
+    .song-card.leader .song-rank {
+      color: var(--orange);
+    }
+
+    .song-info { flex: 1; min-width: 0; }
+    .song-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: 0.05em;
+      color: var(--white);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .song-artist {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-top: 2px;
+    }
+
+    .song-raised {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.03em;
+      color: var(--orange);
+      white-space: nowrap;
+      text-align: right;
+    }
+    .song-raised small {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.25);
+      display: block;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-align: right;
+    }
+
+    .leader-badge {
+      display: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--orange);
+      border-radius: 3px;
+      padding: 2px 7px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .song-card.leader .leader-badge { display: inline; }
+
+    .btn-chip-in {
+      width: 100%;
+      background: transparent;
+      border: 2px solid rgba(255,106,0,0.5);
+      color: var(--orange);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.05rem;
+      letter-spacing: 0.14em;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: opacity 0.15s, border-color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .song-card.leader .btn-chip-in { border-color: var(--orange); }
+    .btn-chip-in:hover { opacity: 0.75; }
+    .btn-chip-in:active { transform: scale(0.97); }
+
+    /* amount picker overlay */
+    .chip-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(8,4,15,0.92);
+      z-index: 1000;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      animation: fadeIn 0.2s ease;
+    }
+    .chip-overlay.visible { display: flex; }
+    .chip-overlay-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.4rem,6vw,2rem);
+      letter-spacing: 0.08em;
+      color: var(--orange);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .chip-overlay-song {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .chip-amounts {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      width: 100%;
+      max-width: 340px;
+      margin-bottom: 20px;
+    }
+    .chip-amt-btn {
+      background: transparent;
+      border: 2px solid var(--orange);
+      color: var(--orange);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: 0.05em;
+      padding: 14px 0;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .chip-amt-btn:active, .chip-amt-btn.selected {
+      background: var(--orange);
+      color: var(--bg);
+    }
+    .btn-chip-venmo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 340px;
+      padding: 20px;
+      background: #3d95ce;
+      border: 3px solid #5bc4f5;
+      border-radius: 6px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.06em;
+      color: #fff;
+      text-decoration: none;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-chip-venmo:hover { opacity: 0.9; }
+    .chip-contact {
+      width: 100%;
+      max-width: 340px;
+      margin-bottom: 16px;
+    }
+    .chip-contact-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 0.95rem;
+      letter-spacing: 0.14em;
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .chip-field-group {
+      margin-bottom: 8px;
+    }
+    .chip-field-group input {
+      width: 100%;
+      background: rgba(255,106,0,0.06);
+      border: 2px solid rgba(255,106,0,0.3);
+      border-radius: 4px;
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      padding: 12px 14px;
+      outline: none;
+      transition: border-color 0.15s;
+      -webkit-appearance: none;
+    }
+    .chip-field-group input:focus {
+      border-color: var(--orange);
+    }
+    .chip-field-group input::placeholder {
+      opacity: 0.3;
+      font-style: italic;
+    }
+    .chip-contact-fine {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem;
+      line-height: 1.6;
+      letter-spacing: 0.04em;
+      color: rgba(255,255,255,0.3);
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    /* chip-in confirmation state */
+    .chip-confirm {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      max-width: 320px;
+      animation: fadeIn 0.3s ease;
+    }
+    .chip-confirm.visible { display: flex; }
+    .chip-confirm-icon {
+      font-size: 3rem;
+      color: var(--orange);
+      margin-bottom: 12px;
+    }
+    .chip-confirm-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 0.08em;
+      color: var(--orange);
+      margin-bottom: 16px;
+    }
+    .chip-confirm-body {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 14px;
+    }
+    .chip-confirm-body strong { color: var(--white); }
+    .chip-confirm-guarantee {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.3);
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    .chip-cancel {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.3);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 20px;
+      padding: 10px 20px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .fund-empty {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.3);
+      text-align: center;
+      margin-top: 20px;
+      font-style: italic;
+    }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 9vw, 3rem);
+      letter-spacing: 0.08em;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .section-sub {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-align: center;
+      opacity: 0.5;
+      margin-bottom: 32px;
+    }
+
+    /* ── TIP VIEW ── */
+    #view-tip .section-title { color: var(--yellow); }
+
+    .just-the-tip {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.4rem, 6vw, 2rem);
+      letter-spacing: 0.06em;
+      color: var(--white);
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .just-the-tip span {
+      color: var(--cyan);
+    }
+
+    .tip-options {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .tip-amount-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      width: 100%;
+      max-width: 360px;
+      margin-bottom: 20px;
+    }
+
+    .tip-amount-btn {
+      background: transparent;
+      border: 2px solid var(--yellow);
+      color: var(--yellow);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 0.06em;
+      padding: 14px 0;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tip-amount-btn:active,
+    .tip-amount-btn.selected {
+      background: var(--yellow);
+      color: var(--bg);
+    }
+
+    .btn-venmo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      max-width: 360px;
+      padding: 22px 20px;
+      background: #3d95ce;
+      border: 3px solid #5bc4f5;
+      border-radius: 6px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.06em;
+      color: #fff;
+      text-decoration: none;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-venmo:active { transform: scale(0.97); }
+    .btn-venmo:hover { opacity: 0.9; }
+
+    .venmo-logo {
+      font-size: 1.1rem;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .tip-note {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      opacity: 0.45;
+      text-align: center;
+      margin-top: 14px;
+    }
+
+    /* ── REQUEST VIEW ── */
+    #view-request .section-title { color: var(--pink); }
+
+    .request-form {
+      width: 100%;
+      max-width: 380px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .field-group label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--pink);
+    }
+    .field-group input,
+    .field-group textarea {
+      background: rgba(255,0,128,0.06);
+      border: 2px solid rgba(255,0,128,0.35);
+      border-radius: 4px;
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      padding: 14px 16px;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.15s;
+      -webkit-appearance: none;
+    }
+    .field-group input:focus,
+    .field-group textarea:focus {
+      border-color: var(--pink);
+    }
+    .field-group textarea {
+      resize: none;
+      height: 90px;
+    }
+    .field-group input::placeholder,
+    .field-group textarea::placeholder {
+      opacity: 0.3;
+      font-style: italic;
+    }
+
+    .btn-submit {
+      background: transparent;
+      border: 3px solid var(--pink);
+      color: var(--pink);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 0.1em;
+      padding: 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      transition: opacity 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-submit:hover { opacity: 0.8; }
+    .btn-submit:active { transform: scale(0.97); }
+    .btn-submit:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ── THANK YOU ── */
+    #view-thanks .section-title { color: var(--cyan); }
+
+    .thanks-box {
+      border: 2px solid rgba(0, 229, 255, 0.35);
+      border-radius: 8px;
+      padding: 24px 28px;
+      max-width: 340px;
+      width: 100%;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    .thanks-box-headline {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      color: var(--cyan);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+    .thanks-box-body {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      line-height: 1.65;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 14px;
+    }
+    .thanks-box-body strong {
+      color: var(--yellow);
+      font-weight: 700;
+    }
+    .thanks-box-fine {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.3);
+      font-style: italic;
+    }
+
+    /* ── BACK BUTTON ── */
+    .btn-back {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.35);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 32px;
+      padding: 10px 20px;
+      transition: color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-back:hover { color: rgba(255,255,255,0.7); }
+
+    /* ── DIVIDER ── */
+    .neon-divider {
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--pink), transparent);
+      margin: 0 auto 28px;
+      border-radius: 2px;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.3;
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    /* ── ERROR / SPINNER ── */
+    .form-error {
+      color: #ff4444;
+      font-size: 0.85rem;
+      text-align: center;
+      display: none;
+    }
+    .spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,0,128,0.3);
+      border-top-color: var(--pink);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════ HOME ═══════════════════════════════════════ -->
+<div class="view active" id="view-home">
+  <div class="band-name"><span class="word-neon">NEON</span><span class="word-blonde">BLONDE</span></div>
+  <div class="band-tagline">80s cover band · neonblonde.band</div>
+
+  <p class="home-tagline">We're glad you're <span>here.</span><br>Now let's party.</p>
+
+  <div class="button-row">
+    <button class="btn-main btn-tip" onclick="showView('tip')">
+      💸 TIP US
+      <span class="sub-label">show some love tonight</span>
+    </button>
+    <button class="btn-main btn-request" onclick="showView('request')">
+      🎵 REQUEST A SONG
+      <span class="sub-label">for our next show</span>
+    </button>
+    <button class="btn-main btn-fund" onclick="showView('fund')">
+      🔥 FUND A SONG
+      <span class="sub-label">vote with your wallet</span>
+    </button>
+  </div>
+
+  <div class="footer">neonblonde.band · @neonblonde</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════ TIP ═══════════════════════════════════════ -->
+<div class="view" id="view-tip">
+  <div class="band-name"><span class="word-neon">NEON</span><span class="word-blonde">BLONDE</span></div>
+
+  <div class="section-title">TIP US</div>
+  <div class="neon-divider"></div>
+
+  <p class="just-the-tip">Just the tip, baby.<br><span>Every dollar keeps us loud.</span></p>
+
+  <!-- Amount selector -->
+  <div class="tip-amount-row">
+    <button class="tip-amount-btn" onclick="selectAmount(this, 5)">$5</button>
+    <button class="tip-amount-btn" onclick="selectAmount(this, 10)">$10</button>
+    <button class="tip-amount-btn" onclick="selectAmount(this, 20)">$20</button>
+    <button class="tip-amount-btn" onclick="selectAmount(this, '')">🎯</button>
+  </div>
+
+  <!-- Venmo button -->
+  <a id="venmo-btn" class="btn-venmo" href="https://venmo.com/neonblonde" target="_blank" rel="noopener">
+    <span class="venmo-logo">Venmo</span>
+    <span>@neonblonde</span>
+  </a>
+
+  <p class="tip-note">Opens Venmo · Amount pre-filled · Any amount welcome</p>
+
+  <button class="btn-back" onclick="showView('home')">← back</button>
+  <div class="footer">thank you 🤘</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════ REQUEST ═══════════════════════════════════════ -->
+<div class="view" id="view-request">
+  <div class="band-name"><span class="word-neon">NEON</span><span class="word-blonde">BLONDE</span></div>
+
+  <div class="section-title">REQUEST</div>
+  <div class="neon-divider" style="background:linear-gradient(90deg,transparent,#ff0080,transparent)"></div>
+
+  <p class="section-sub" id="request-sub">We read every one</p>
+
+  <form class="request-form" id="request-form" onsubmit="submitRequest(event)">
+    <div class="field-group">
+      <label>Song Title *</label>
+      <input type="text" id="field-song" placeholder="e.g. Girls Just Wanna Have Fun" required maxlength="100" autocomplete="off" />
+    </div>
+    <div class="field-group">
+      <label>Artist *</label>
+      <input type="text" id="field-artist" placeholder="e.g. Cyndi Lauper" required maxlength="100" autocomplete="off" />
+    </div>
+    <div class="field-group">
+      <label>Your Name <span style="opacity:0.4;font-size:0.7rem">(optional)</span></label>
+      <input type="text" id="field-name" placeholder="e.g. Jessica" maxlength="60" autocomplete="off" />
+    </div>
+    <div class="field-group">
+      <label>Your Email *</label>
+      <input type="email" id="field-email" placeholder="so we can reach you" required maxlength="120" autocomplete="off" />
+    </div>
+    <div class="field-group">
+      <label>Phone <span style="opacity:0.4;font-size:0.7rem">(optional)</span></label>
+      <input type="tel" id="field-phone" placeholder="in case email doesn't work" maxlength="20" autocomplete="off" />
+    </div>
+    <div class="field-group">
+      <label>Message <span style="opacity:0.4;font-size:0.7rem">(optional)</span></label>
+      <textarea id="field-msg" placeholder="Dedications, shoutouts, anything we should know..."></textarea>
+    </div>
+
+    <div class="form-error" id="form-error">Something went wrong. Please try again.</div>
+    <div class="spinner" id="spinner"></div>
+
+    <button type="submit" class="btn-submit" id="submit-btn">SEND IT →</button>
+  </form>
+
+  <button class="btn-back" onclick="showView('home')">← back</button>
+  <div class="footer" id="request-footer">requests go on the list · we read every one</div>
+</div>
+
+
+<!-- ═══════════════════════════════════════ FUND ═══════════════════════════════════════ -->
+<div class="view" id="view-fund">
+  <div class="band-name"><span class="word-neon">NEON</span><span class="word-blonde">BLONDE</span></div>
+  <div class="section-title">FUND A SONG</div>
+  <div class="neon-divider" style="background:linear-gradient(90deg,transparent,#ff6a00,transparent)"></div>
+
+  <p class="fund-intro">
+    Chip in on any song. <strong>The most funded song gets played</strong> as soon as we've got it ready —
+    at a venue in Santa Barbara or Ventura of your choosing.
+    We'll send you a <strong>credit to use at the show.</strong>
+    And if it never happens? <strong>Full refund. No questions.</strong>
+  </p>
+
+  <div class="song-list" id="song-list">
+    <!-- populated by JS -->
+  </div>
+
+  <p class="fund-empty" id="fund-empty" style="display:none">No songs in the pool yet. Check back soon!</p>
+
+  <button class="btn-back" onclick="showView('home')">← back</button>
+  <div class="footer">leaderboard resets after each show · venmo note auto-filled</div>
+</div>
+
+<!-- chip-in amount overlay -->
+<div class="chip-overlay" id="chip-overlay">
+  <p class="chip-overlay-title" id="chip-overlay-title">CHIP IN</p>
+  <p class="chip-overlay-song" id="chip-overlay-song"></p>
+
+  <div class="chip-amounts">
+    <button class="chip-amt-btn" onclick="selectChip(this,5)">$5</button>
+    <button class="chip-amt-btn" onclick="selectChip(this,10)">$10</button>
+    <button class="chip-amt-btn" onclick="selectChip(this,25)">$25</button>
+    <button class="chip-amt-btn" onclick="selectChip(this,50)">$50</button>
+  </div>
+
+  <div class="chip-contact">
+    <p class="chip-contact-label">Where do we send your credit?</p>
+    <div class="chip-field-group">
+      <input type="text" id="chip-name" placeholder="Your name" maxlength="60" autocomplete="off" />
+    </div>
+    <div class="chip-field-group">
+      <input type="text" id="chip-contact" placeholder="Email or phone number" maxlength="100" autocomplete="off" />
+    </div>
+    <p class="chip-contact-fine">
+      We'll reach out when the song is booked.<br>
+      If it never happens — full refund, no questions asked.
+    </p>
+  </div>
+
+  <a id="chip-venmo-btn" class="btn-chip-venmo" href="#" target="_blank" rel="noopener" onclick="saveChipContact(); showChipConfirm();">
+    <span style="font-family:'DM Sans',sans-serif;font-weight:700">Venmo</span>
+    <span>SEND IT →</span>
+  </a>
+  <button class="chip-cancel" onclick="closeChipOverlay()">← cancel</button>
+
+  <!-- confirmation state (shown after Venmo tap) -->
+  <div class="chip-confirm" id="chip-confirm">
+    <div class="chip-confirm-icon">✓</div>
+    <p class="chip-confirm-title">YOU'RE IN THE POOL</p>
+    <p class="chip-confirm-body">
+      Finish the payment in Venmo if you haven't already.<br>
+      We've saved your info — <strong id="chip-confirm-contact"></strong> —
+      and we'll reach out as soon as the song is booked at a local venue.
+    </p>
+    <p class="chip-confirm-guarantee">
+      If it never gets played: full refund. We promise.
+    </p>
+    <button class="btn-chip-in" style="max-width:280px;margin-top:8px" onclick="closeChipOverlay()">DONE</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ THANKS ═══════════════════════════════════════ -->
+<div class="view" id="view-thanks">
+  <div class="band-name"><span class="word-neon">NEON</span><span class="word-blonde">BLONDE</span></div>
+  <div class="section-title" id="thanks-title">REQUEST SENT!</div>
+  <div class="neon-divider" style="background:linear-gradient(90deg,transparent,#00e5ff,transparent)"></div>
+
+  <div class="thanks-box">
+    <p class="thanks-box-headline">Request received.</p>
+    <p class="thanks-box-body">
+      We'll review it and get back to you at <strong id="thanks-contact-echo">the contact you provided.</strong>
+    </p>
+    <p class="thanks-box-body" style="margin-top:10px">
+      If we accept it and add it to our setlist,
+      we'll send you a <strong>Venmo request for $100.</strong>
+      You pay, we play. Simple as that.
+    </p>
+  </div>
+
+  <button class="btn-main btn-tip" style="max-width:320px" onclick="showView('tip')">
+    💸 TIP THE BAND
+    <span class="sub-label">while you're at it</span>
+  </button>
+  <button class="btn-back" onclick="showView('home')">← back to start</button>
+</div>
+
+
+<script>
+  /* ── CONFIG ── */
+  const SHEET_ENDPOINT = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
+
+
+  /* ── VIEW SWITCHER ── */
+  function showView(name) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + name).classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  /* ── TIP AMOUNT SELECTOR ── */
+  let selectedAmount = null;
+  function selectAmount(btn, amount) {
+    document.querySelectorAll('.tip-amount-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedAmount = amount;
+    const base = 'https://venmo.com/neonblonde';
+    if (amount && amount !== '') {
+      document.getElementById('venmo-btn').href =
+        `venmo://paycharge?txn=pay&recipients=neonblonde&amount=${amount}&note=Neon%20Blonde%20🎸`;
+    } else {
+      document.getElementById('venmo-btn').href = base;
+    }
+  }
+
+  /* ── SONG REQUEST SUBMISSION ── */
+  async function submitRequest(e) {
+    e.preventDefault();
+    const song    = document.getElementById('field-song').value.trim();
+    const artist  = document.getElementById('field-artist').value.trim();
+    const name    = document.getElementById('field-name').value.trim();
+    const email   = document.getElementById('field-email').value.trim();
+    const phone   = document.getElementById('field-phone').value.trim();
+    const msg     = document.getElementById('field-msg').value.trim();
+    const errEl   = document.getElementById('form-error');
+    const spinner = document.getElementById('spinner');
+    const btn     = document.getElementById('submit-btn');
+
+    errEl.style.display = 'none';
+    btn.style.display   = 'none';
+    spinner.style.display = 'block';
+    btn.disabled = true;
+
+    const contactEcho = document.getElementById('thanks-contact-echo');
+    if (contactEcho) {
+      const label = email ? email : (phone ? phone : 'the contact you provided');
+      contactEcho.textContent = label;
+    }
+
+    const payload = {
+      song,
+      artist,
+      name:    name  || 'Anonymous',
+      email:   email || '',
+      phone:   phone || '',
+      message: msg,
+      timestamp: new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })
+    };
+
+    if (!SHEET_ENDPOINT || SHEET_ENDPOINT === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
+      await delay(800);
+      spinner.style.display = 'none';
+      btn.style.display = 'block';
+      btn.disabled = false;
+      showView('thanks');
+      return;
+    }
+
+    try {
+      await fetch(SHEET_ENDPOINT, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      spinner.style.display = 'none';
+      btn.style.display = 'block';
+      btn.disabled = false;
+      document.getElementById('request-form').reset();
+      showView('thanks');
+    } catch (err) {
+      spinner.style.display = 'none';
+      btn.style.display = 'block';
+      btn.disabled = false;
+      errEl.textContent = 'Connection error. Check your signal and try again.';
+      errEl.style.display = 'block';
+    }
+  }
+
+  function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  /* ── FUND A SONG ── */
+  const DEMO_SONGS = [
+    { song: "Girls Just Wanna Have Fun", artist: "Cyndi Lauper",  raised: 40, goal: 100 },
+    { song: "Don't Stop Believin'",      artist: "Journey",        raised: 75, goal: 100 },
+    { song: "Take On Me",                artist: "a-ha",           raised: 20, goal: 100 },
+    { song: "Sweet Child O' Mine",       artist: "Guns N' Roses",  raised: 55, goal: 100 },
+  ];
+
+  let chipSong = null;
+  let chipAmount = null;
+
+  function renderSongs(songs) {
+    const list = document.getElementById('song-list');
+    const empty = document.getElementById('fund-empty');
+    if (!songs || songs.length === 0) {
+      list.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    const sorted = [...songs].sort((a, b) => b.raised - a.raised);
+    empty.style.display = 'none';
+    list.innerHTML = sorted.map((s, i) => {
+      const isLeader = i === 0;
+      return `
+        <div class="song-card${isLeader ? ' leader' : ''}">
+          <div class="song-card-top">
+            <div class="song-rank">${i + 1}</div>
+            <div class="song-info">
+              <div class="song-title">
+                ${s.song}
+                ${isLeader ? '<span class="leader-badge">LEADING</span>' : ''}
+              </div>
+              <div class="song-artist">${s.artist}</div>
+            </div>
+            <div class="song-raised">
+              $${s.raised}
+              <small>raised</small>
+            </div>
+          </div>
+          <button class="btn-chip-in" onclick="openChipOverlay(${i})">
+            🔥 ${isLeader ? 'KEEP IT IN THE LEAD' : 'CHIP IN'}
+          </button>
+        </div>`;
+    }).join('');
+    window._sortedSongs = sorted;
+  }
+
+  function loadSongs() {
+    if (!SHEET_ENDPOINT || SHEET_ENDPOINT === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
+      renderSongs(DEMO_SONGS);
+      return;
+    }
+    fetch(SHEET_ENDPOINT + '?action=songs')
+      .then(r => r.json())
+      .then(data => renderSongs(data.songs || DEMO_SONGS))
+      .catch(() => renderSongs(DEMO_SONGS));
+  }
+
+  const _origShowView = showView;
+  showView = function(name) {
+    if (name === 'fund') loadSongs();
+    _origShowView(name);
+  };
+
+  function openChipOverlay(idx) {
+    const s = (window._sortedSongs || DEMO_SONGS)[idx];
+    chipSong = { song: s.song, artist: s.artist };
+    chipAmount = null;
+
+    document.getElementById('chip-overlay-title').textContent = idx === 0 ? 'KEEP IT LEADING' : 'CHIP IN';
+    document.getElementById('chip-overlay-song').textContent = s.song + ' — ' + s.artist;
+    document.querySelectorAll('.chip-amt-btn').forEach(b => b.classList.remove('selected'));
+    document.getElementById('chip-venmo-btn').href = 'https://venmo.com/neonblonde';
+    document.getElementById('chip-name').value = '';
+    document.getElementById('chip-contact').value = '';
+    document.getElementById('chip-overlay').classList.add('visible');
+  }
+
+  function saveChipContact() {
+    if (!chipSong) return;
+    const name    = document.getElementById('chip-name').value.trim();
+    const contact = document.getElementById('chip-contact').value.trim();
+    if (!contact) return;
+
+    const payload = {
+      type:    'fund',
+      song:    chipSong.song,
+      artist:  chipSong.artist,
+      amount:  chipAmount || '?',
+      name:    name || 'Anonymous',
+      contact: contact,
+      timestamp: new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })
+    };
+
+    if (SHEET_ENDPOINT && SHEET_ENDPOINT !== 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
+      fetch(SHEET_ENDPOINT, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).catch(() => {});
+    }
+  }
+
+  function showChipConfirm() {
+    const contact = document.getElementById('chip-contact').value.trim();
+    const name    = document.getElementById('chip-name').value.trim();
+    document.querySelectorAll(
+      '.chip-overlay-title, .chip-overlay-song, .chip-amounts, .chip-contact, .btn-chip-venmo, .chip-cancel'
+    ).forEach(el => el.style.display = 'none');
+    const confirm = document.getElementById('chip-confirm');
+    const label = contact
+      ? (name ? name + ' (' + contact + ')' : contact)
+      : 'your contact info';
+    document.getElementById('chip-confirm-contact').textContent = label;
+    confirm.classList.add('visible');
+  }
+
+  function closeChipOverlay() {
+    document.querySelectorAll(
+      '.chip-overlay-title, .chip-overlay-song, .chip-amounts, .chip-contact, .btn-chip-venmo, .chip-cancel'
+    ).forEach(el => el.style.display = '');
+    document.getElementById('chip-confirm').classList.remove('visible');
+    document.getElementById('chip-overlay').classList.remove('visible');
+    chipSong = null;
+    chipAmount = null;
+  }
+
+  function selectChip(btn, amount) {
+    chipAmount = amount;
+    document.querySelectorAll('.chip-amt-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    if (chipSong) {
+      const note = encodeURIComponent('FUND: ' + chipSong.song);
+      document.getElementById('chip-venmo-btn').href =
+        `venmo://paycharge?txn=pay&recipients=neonblonde&amount=${amount}&note=${note}`;
+    }
+  }
+</script>
+</body>
+</html>
