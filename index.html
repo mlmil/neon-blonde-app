@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Neon Blonde — Tip & Request</title>
 
   <!-- QR Code library (for admin use) -->
@@ -34,6 +34,7 @@
     }
 
     html, body {
+      width: 100%;
       height: 100%;
       background: var(--bg);
       color: var(--white);
@@ -60,6 +61,7 @@
     /* ── VIEWS ── */
     .view {
       display: none;
+      width: 100%;
       min-height: 100vh;
       flex-direction: column;
       align-items: center;
@@ -1002,9 +1004,11 @@
     selectedAmount = amount;
     const base = 'https://venmo.com/neonblonde';
     if (amount && amount !== '') {
+      // Venmo deep link with amount
       document.getElementById('venmo-btn').href =
         `venmo://paycharge?txn=pay&recipients=neonblonde&amount=${amount}&note=Neon%20Blonde%20🎸`;
     } else {
+      // Custom amount — just open Venmo
       document.getElementById('venmo-btn').href = base;
     }
   }
@@ -1027,6 +1031,7 @@
     spinner.style.display = 'block';
     btn.disabled = true;
 
+    // Echo contact info on thanks screen
     const contactEcho = document.getElementById('thanks-contact-echo');
     if (contactEcho) {
       const label = email ? email : (phone ? phone : 'the contact you provided');
@@ -1043,8 +1048,9 @@
       timestamp: new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })
     };
 
+    // If no endpoint configured yet, just show thanks immediately (demo mode)
     if (!SHEET_ENDPOINT || SHEET_ENDPOINT === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
-      await delay(800);
+      await delay(800); // simulate network
       spinner.style.display = 'none';
       btn.style.display = 'block';
       btn.disabled = false;
@@ -1076,11 +1082,13 @@
   function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
   /* ── FUND A SONG ── */
+
+  // Demo songs shown when no endpoint is configured
   const DEMO_SONGS = [
-    { song: "Girls Just Wanna Have Fun", artist: "Cyndi Lauper",  raised: 40, goal: 100 },
-    { song: "Don't Stop Believin'",      artist: "Journey",        raised: 75, goal: 100 },
-    { song: "Take On Me",                artist: "a-ha",           raised: 20, goal: 100 },
-    { song: "Sweet Child O' Mine",       artist: "Guns N' Roses",  raised: 55, goal: 100 },
+    { song: "Girls Just Wanna Have Fun", artist: "Cyndi Lauper",    raised: 40,  goal: 100 },
+    { song: "Don't Stop Believin'",      artist: "Journey",          raised: 75,  goal: 100 },
+    { song: "Take On Me",                artist: "a-ha",             raised: 20,  goal: 100 },
+    { song: "Sweet Child O' Mine",       artist: "Guns N' Roses",    raised: 55,  goal: 100 },
   ];
 
   let chipSong = null;
@@ -1094,6 +1102,7 @@
       empty.style.display = 'block';
       return;
     }
+    // Sort descending by amount raised
     const sorted = [...songs].sort((a, b) => b.raised - a.raised);
     empty.style.display = 'none';
     list.innerHTML = sorted.map((s, i) => {
@@ -1119,6 +1128,7 @@
           </button>
         </div>`;
     }).join('');
+    // store sorted order for chip-in overlay
     window._sortedSongs = sorted;
   }
 
@@ -1133,6 +1143,7 @@
       .catch(() => renderSongs(DEMO_SONGS));
   }
 
+  // Override showView to load songs when fund view opens
   const _origShowView = showView;
   showView = function(name) {
     if (name === 'fund') loadSongs();
@@ -1157,7 +1168,7 @@
     if (!chipSong) return;
     const name    = document.getElementById('chip-name').value.trim();
     const contact = document.getElementById('chip-contact').value.trim();
-    if (!contact) return;
+    if (!contact) return; // nothing to save without contact info
 
     const payload = {
       type:    'fund',
@@ -1182,6 +1193,7 @@
   function showChipConfirm() {
     const contact = document.getElementById('chip-contact').value.trim();
     const name    = document.getElementById('chip-name').value.trim();
+    // show the confirmation, hide the form elements
     document.querySelectorAll(
       '.chip-overlay-title, .chip-overlay-song, .chip-amounts, .chip-contact, .btn-chip-venmo, .chip-cancel'
     ).forEach(el => el.style.display = 'none');
@@ -1194,6 +1206,7 @@
   }
 
   function closeChipOverlay() {
+    // reset overlay back to input state
     document.querySelectorAll(
       '.chip-overlay-title, .chip-overlay-song, .chip-amounts, .chip-contact, .btn-chip-venmo, .chip-cancel'
     ).forEach(el => el.style.display = '');
