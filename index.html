@@ -36,6 +36,7 @@
     html, body {
       width: 100%;
       height: 100%;
+      max-width: 100%;
       background: var(--bg);
       color: var(--white);
       font-family: 'DM Sans', sans-serif;
@@ -146,6 +147,8 @@
       background: transparent;
       transition: transform 0.15s ease, opacity 0.15s ease;
       -webkit-tap-highlight-color: transparent;
+      overflow: hidden;
+      min-width: 0;
     }
     .btn-main:active { transform: scale(0.97); }
     .btn-main:hover { opacity: 0.85; }
