@@ -134,11 +134,11 @@
       align-items: center;
       justify-content: center;
       width: 100%;
-      padding: 28px 20px;
+      padding: 6px 0;
       border: 3px solid;
       border-radius: 6px;
       font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(2rem, 9vw, 2.8rem);
+      font-size: clamp(1.9rem, 9vw, 2.6rem);
       letter-spacing: 0.08em;
       text-transform: uppercase;
       text-decoration: none;
@@ -149,6 +149,9 @@
     }
     .btn-main:active { transform: scale(0.97); }
     .btn-main:hover { opacity: 0.85; }
+    .btn-tip    { font-size: clamp(5.2rem, 25vw, 7rem);   letter-spacing: 0.03em; padding: 4px 0; }
+    .btn-request{ font-size: clamp(4.2rem, 21vw, 5.8rem); letter-spacing: 0.03em; padding: 4px 0; }
+    .btn-fund   { font-size: clamp(2.8rem, 14vw, 3.8rem); letter-spacing: 0.03em; padding: 4px 0; }
 
     .btn-main .sub-label {
       font-family: 'DM Sans', sans-serif;
@@ -794,15 +797,14 @@
 
   <div class="button-row">
     <button class="btn-main btn-tip" onclick="showView('tip')">
-      💸 TIP US
-      <span class="sub-label">show some love tonight</span>
+      TIP US
     </button>
     <button class="btn-main btn-request" onclick="showView('request')">
-      🎵 REQUEST A SONG
-      <span class="sub-label">for our next show</span>
+      REQUEST
+      <span class="sub-label">a song for our next show</span>
     </button>
     <button class="btn-main btn-fund" onclick="showView('fund')">
-      🔥 FUND A SONG
+      FUND A SONG
       <span class="sub-label">vote with your wallet</span>
     </button>
   </div>
@@ -986,7 +988,7 @@
 
 <script>
   /* ── CONFIG ── */
-  const SHEET_ENDPOINT = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
+  const SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwq9hyQNXdk0avS373d6ye28EHg3T2bdHddTMT7WTDTrTfvemZjjZbn85X5bi_zufb6/exec';
 
 
   /* ── VIEW SWITCHER ── */
