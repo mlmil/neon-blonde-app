@@ -582,32 +582,37 @@
 
     .btn-venmo {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 0;
       width: 100%;
       max-width: 360px;
-      padding: 22px 20px;
+      padding: 4px 0;
       background: #3d95ce;
       border: 3px solid #5bc4f5;
       border-radius: 6px;
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.6rem;
-      letter-spacing: 0.06em;
+      font-size: clamp(2rem, 10vw, 2.8rem);
+      letter-spacing: 0.03em;
       color: #fff;
       text-decoration: none;
       cursor: pointer;
       transition: opacity 0.15s;
       -webkit-tap-highlight-color: transparent;
+      overflow: hidden;
+      min-width: 0;
     }
     .btn-venmo:active { transform: scale(0.97); }
     .btn-venmo:hover { opacity: 0.9; }
 
     .venmo-logo {
-      font-size: 1.1rem;
+      font-size: 0.75rem;
       font-family: 'DM Sans', sans-serif;
       font-weight: 700;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      opacity: 0.8;
     }
 
     .tip-note {
@@ -835,8 +840,8 @@
 
   <!-- Venmo button -->
   <a id="venmo-btn" class="btn-venmo" href="https://venmo.com/neonblondeband" target="_blank" rel="noopener">
-    <span class="venmo-logo">Venmo</span>
-    <span>@neonblonde</span>
+    <span class="venmo-logo">venmo</span>
+    <span class="venmo-handle">@neonblondeband</span>
   </a>
 
   <p class="tip-note">Opens Venmo · Amount pre-filled · Any amount welcome</p>
