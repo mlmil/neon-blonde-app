@@ -834,7 +834,7 @@
   </div>
 
   <!-- Venmo button -->
-  <a id="venmo-btn" class="btn-venmo" href="https://venmo.com/neonblonde" target="_blank" rel="noopener">
+  <a id="venmo-btn" class="btn-venmo" href="https://venmo.com/neonblondeband" target="_blank" rel="noopener">
     <span class="venmo-logo">Venmo</span>
     <span>@neonblonde</span>
   </a>
@@ -1007,11 +1007,11 @@
     document.querySelectorAll('.tip-amount-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
     selectedAmount = amount;
-    const base = 'https://venmo.com/neonblonde';
+    const base = 'https://venmo.com/neonblondeband';
     if (amount && amount !== '') {
       // Venmo deep link with amount
       document.getElementById('venmo-btn').href =
-        `venmo://paycharge?txn=pay&recipients=neonblonde&amount=${amount}&note=Neon%20Blonde%20🎸`;
+        `venmo://paycharge?txn=pay&recipients=neonblondeband&amount=${amount}&note=Neon%20Blonde%20🎸`;
     } else {
       // Custom amount — just open Venmo
       document.getElementById('venmo-btn').href = base;
@@ -1163,7 +1163,7 @@
     document.getElementById('chip-overlay-title').textContent = idx === 0 ? 'KEEP IT LEADING' : 'CHIP IN';
     document.getElementById('chip-overlay-song').textContent = s.song + ' — ' + s.artist;
     document.querySelectorAll('.chip-amt-btn').forEach(b => b.classList.remove('selected'));
-    document.getElementById('chip-venmo-btn').href = 'https://venmo.com/neonblonde';
+    document.getElementById('chip-venmo-btn').href = 'https://venmo.com/neonblondeband';
     document.getElementById('chip-name').value = '';
     document.getElementById('chip-contact').value = '';
     document.getElementById('chip-overlay').classList.add('visible');
@@ -1228,7 +1228,7 @@
     if (chipSong) {
       const note = encodeURIComponent('FUND: ' + chipSong.song);
       document.getElementById('chip-venmo-btn').href =
-        `venmo://paycharge?txn=pay&recipients=neonblonde&amount=${amount}&note=${note}`;
+        `venmo://paycharge?txn=pay&recipients=neonblondeband&amount=${amount}&note=${note}`;
     }
   }
 </script>
